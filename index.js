@@ -73,6 +73,25 @@ app.get('/', (req, res) => {
   });
 });
 
+app.delete('/delete/:id', (req, res) => {
+  const userId = req.params.id;
+  const sqlQuery = 'DELETE FROM usernames WHERE id = ?';
+
+  database.query(sqlQuery, [userId], (err, result) => {
+      if (err) {
+          console.error("Database error:", err);
+          return res.status(500).send("Database error.");
+      }
+      
+      if (result.affectedRows === 0) {
+          return res.status(404).send("User not found.");
+      }
+
+      res.send("User deleted successfully!");
+  });
+});
+
+
 // app.listen(3000, () => {   
   const port = process.env.PORT || 3000;
 
