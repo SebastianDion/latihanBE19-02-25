@@ -69,7 +69,7 @@ app.get('/', (req, res) => {
   database.query(sqlQuery, (err, result) => {
       if (err) throw err;
 
-      res.json({ 'emails': result });
+      res.json({ 'Username': result });
   });
 });
 
@@ -90,6 +90,22 @@ app.delete('/delete/:id', (req, res) => {
       res.send("User deleted successfully!");
   });
 });
+
+app.get('/search/:name', (req, res) => {
+  const searchTerm = req.params.name; // Get name from URL parameter
+  const sqlQuery = 'SELECT * FROM usernames WHERE firstname LIKE ? OR lastname LIKE ?';
+  const searchValue = `%${searchTerm}%`;
+
+  database.query(sqlQuery, [searchValue, searchValue], (err, result) => {
+      if (err) {
+          res.status(500).json({ error: err.message });
+          return;
+      }
+
+      res.json({ results: result });
+  });
+});
+
 
 
 // app.listen(3000, () => {   
